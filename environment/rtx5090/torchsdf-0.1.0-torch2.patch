@@ -1,0 +1,25 @@
+diff --git a/setup.py b/setup.py
+index dc222ed..dc1ab7f 100644
+--- a/setup.py
++++ b/setup.py
+@@ -13,6 +13,7 @@ from pkg_resources import parse_version
+ import subprocess
+ import warnings
+ 
++IGNORE_TORCH_VER = os.getenv('IGNORE_TORCH_VER') is not None
+ TORCH_MIN_VER = '1.5.0'
+ TORCH_MAX_VER = '1.12.1'
+ 
+diff --git a/torchsdf/csrc/utils.h b/torchsdf/csrc/utils.h
+index 88f8f31..1673818 100644
+--- a/torchsdf/csrc/utils.h
++++ b/torchsdf/csrc/utils.h
+@@ -23,7 +23,7 @@
+   /* Code block avoids redefinition of cudaError_t error */ \
+   do { \
+     cudaError_t error = condition; \
+-    CHECK_EQ(error, cudaSuccess) << " " << cudaGetErrorString(error); \
++    TORCH_CHECK(error == cudaSuccess, cudaGetErrorString(error)); \
+   } while (0)
+ 
+ #define PRIVATE_CASE_TYPE(ENUM_TYPE, TYPE, TYPE_NAME, ...) \

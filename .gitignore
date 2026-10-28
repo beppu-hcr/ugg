@@ -222,3 +222,6 @@ dump/
 *.pdf
 checkpoints
 data
+
+# RTX 5090 setup: TorchSDF is cloned here (see SETUP_NOTES.md)
+thirdparty/TorchSDF/
