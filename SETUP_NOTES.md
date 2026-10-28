@@ -112,7 +112,32 @@ PyTorch 2.x では `model/ugg/UViT/UViT.py` が `scaled_dot_product_attention`�
   `None of the inputs have requires_grad=True`：推論時の gradient checkpointing によるもの。
 - `torch.cuda.amp.autocast(args...) is deprecated`（`utils/hand_model.py`）など、PyTorch 2.x の FutureWarning。
 
+### 全1125物体
+設定 `experiments/ugg_obj2hand_test_full.yaml`（`ugg_obj2hand_test.yaml` に `LOG_FILE_NAME: full1125` を追加。
+`DATA.RANGE` は既定の `[0, -1]` で全物体）。Claude Code の終了で止まらないよう tmux セッション `ugg-full` で実行し、
+標準出力を `logs/obj2hand_full1125.log` にも保存する：
+```
+tmux new-session -d -s ugg-full -c ~/ugg
+tmux send-keys -t ugg-full 'conda activate ugg && python model/ugg/eval_generation.py --cfg experiments/ugg_obj2hand_test_full.yaml 2>&1 | tee logs/obj2hand_full1125.log' Enter
+```
+出力：`results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1125_<時刻>.pk`
+（20物体ごとに途中結果で上書き保存される）。スクリプト自身のログは同じディレクトリ階層の
+`eval_log/eval_log_full1125_<時刻>.log` にも出る。
+
 ## 未対応（シミュレーション評価）
 `isaac/simulation_test.py` は Isaac Gym（Python 3.8）と同じプロセスで、CUDA 専用の TorchSDF を使う HandModel を
 GPU で動かすため、このままでは RTX 5090 では動かない。ほかにも `isaac/run_sim.sh` が存在しない
 `isaac/simulate_test.py` を呼んでいる、`DEVICE_ID = 6` が直書き、といった問題がある。
+
+## 次にやること
+- シミュレーション評価（README の手順4）。
+  - `simulation_test.py` は `TEST_FILE` が空だと `test_obj2hand/` の中で更新時刻が一番新しい .pk を自動で読む。
+    2物体の試験結果などを誤って読まないよう、`TEST_FILE` で全物体の結果
+    （`test_obj2hand_full1125_<時刻>.pk`）を明示する。
+  - 評価の判定基準は元のコードから変えない。元のコードでは
+    `valid = (E_pen < thres_pen) かつ (手と物体をまとめて回転させた6つの向き（重力に対する6方向）のうち1つ以上で、
+    sim_step 後も手と物体の接触が残っている)`（`simulation_test.py` の `sim_result.sum(-1) > 0`、
+    `isaac_validator.py` の `run_sim`）。q1 は `cal_q1` で計算して記録するだけで、成功の判定には使わない。変えるのはプログラムを2つに分けることだけ：
+    E_pen と q1 は `ugg` 環境（Python 3.10、GPU）で計算し、Isaac Gym のシミュレーションだけを
+    `grasp2grasp` 環境（Python 3.8）で動かして、結果を元と同じ形式でまとめる。
+  - あわせて `run_sim.sh` のスクリプト名（`simulate_test.py` → `simulation_test.py`）と `DEVICE_ID = 6`（→ 0）を直す。
