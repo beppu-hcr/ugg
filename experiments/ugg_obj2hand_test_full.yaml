@@ -61,5 +61,5 @@ MODEL:
 
 WEIGHT_FILE: checkpoints/ugg/ugg_bs8x256_lr0002_l2_cosine/ugg.ckpt
 
-# RTX 5090: all 1125 objects of the test split (DATA.RANGE defaults to [0, -1])
-LOG_FILE_NAME: full1125
+# RTX 5090: all 1126 objects of the test split (DATA.RANGE defaults to [0, -1])
+LOG_FILE_NAME: full1126
