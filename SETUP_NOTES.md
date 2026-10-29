@@ -124,20 +124,70 @@ tmux send-keys -t ugg-full 'conda activate ugg && set -o pipefail && python mode
 （20物体ごとに途中結果で上書き保存される）。スクリプト自身のログは同じディレクトリ階層の
 `eval_log/eval_log_full1126_<時刻>.log` にも出る。
 
-## 未対応（シミュレーション評価）
+## 4. シミュレーション評価（2段階に分割）
 `isaac/simulation_test.py` は Isaac Gym（Python 3.8）と同じプロセスで、CUDA 専用の TorchSDF を使う HandModel を
-GPU で動かすため、このままでは RTX 5090 では動かない。ほかにも `isaac/run_sim.sh` が存在しない
-`isaac/simulate_test.py` を呼んでいる、`DEVICE_ID = 6` が直書き、といった問題がある。
+GPU で動かすため、RTX 5090 ではそのまま動かない（Python 3.8 の PyTorch は sm_120 非対応）。
+元のファイル（`simulation_test.py`、`isaac_validator.py`、`run_sim.sh`）は変更せず、次の新しいスクリプトに分けた：
 
-## 次にやること
-- シミュレーション評価（README の手順4）。
-  - `simulation_test.py` は `TEST_FILE` が空だと `test_obj2hand/` の中で更新時刻が一番新しい .pk を自動で読む。
-    2物体の試験結果などを誤って読まないよう、`TEST_FILE` で全物体の結果
-    （`test_obj2hand_full1126_<時刻>.pk`）を明示する。
-  - 評価の判定基準は元のコードから変えない。元のコードでは
-    `valid = (E_pen < thres_pen) かつ (手と物体をまとめて回転させた6つの向き（重力に対する6方向）のうち1つ以上で、
-    sim_step 後も手と物体の接触が残っている)`（`simulation_test.py` の `sim_result.sum(-1) > 0`、
-    `isaac_validator.py` の `run_sim`）。q1 は `cal_q1` で計算して記録するだけで、成功の判定には使わない。変えるのはプログラムを2つに分けることだけ：
-    E_pen と q1 は `ugg` 環境（Python 3.10、GPU）で計算し、Isaac Gym のシミュレーションだけを
-    `grasp2grasp` 環境（Python 3.8）で動かして、結果を元と同じ形式でまとめる。
-  - あわせて `run_sim.sh` のスクリプト名（`simulate_test.py` → `simulation_test.py`）と `DEVICE_ID = 6`（→ 0）を直す。
+| スクリプト | 環境 | 内容 |
+|---|---|---|
+| `isaac/sim_split_metrics.py` | `ugg`（GPU） | `obj2hand_sim` のうち Isaac 以外（E_pen、q1、`sim_test` に渡す姿勢の変換）を元のコードのまま実行して保存 |
+| `isaac/sim_split_isaac.py` | `grasp2grasp`（Isaac Gym、PhysX は GPU） | 元と同じ `IsaacValidator` で6方向のシミュレーションを行い、元と同じキーの result_dict を保存 |
+| `isaac/run_sim_split.sh` | — | 上の2つを順に実行。Isaac 側は元の `run_sim.sh` と同じく25物体ずつ別プロセス |
+| `isaac/summarize_sim_split.py` | `ugg` | 結果を集計（論文の表との比較用） |
+
+- 判定基準は元のまま：`penetration = E_pen < thres_pen (0.005 m)`、
+  `simulated = 手と物体をまとめて回転させた6つの向き（重力に対する6方向）のうち1つ以上で、100ステップ後も手と物体の接触が残る`、
+  `valid = penetration かつ simulated`。q1 は記録するだけで判定には使わない。`isaac_validator.py` の設定（ステップ数、摩擦、重力など）も変えていない。
+- 元のコードとの違いは次だけ：
+  - `TEST_FILE` を必須にした（元は空なら `test_obj2hand/` の中で一番新しい .pk を自動で読む）。
+    設定 `experiments/ugg_simulation_test_full.yaml` で `test_obj2hand_full1126_<時刻>.pk` を明示している。
+  - GPU 番号：元は `DEVICE_ID = 6` が直書き。(1) は `cuda:0`、(2) は `--gpu`（既定 0）。
+  - (1) は全物体を1プロセスで処理する。元は25物体ごとにプロセスを起動し直して乱数の種を毎回 42 に戻していたので、
+    E_pen の計算に使う物体点群（メッシュから毎回ランダムにサンプリング）と q1 の接触点の選び方の乱数は元と同じにはならない。
+    判定の定義は同じ。
+- 出力のキーと順番が元の result_dict と同じことを、`simulation_test.py` のソースから抜き出したキーと比べて確認した。
+
+実行（tmux セッション `ugg-sim`、ログ `logs/sim_full1126.log`）：
+```
+tmux new-session -d -s ugg-sim -c ~/ugg
+tmux send-keys -t ugg-sim 'set -o pipefail; bash isaac/run_sim_split.sh 2>&1 | tee logs/sim_full1126.log' Enter
+```
+出力：`results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/`
+（`metrics_st_0_ed_1125_*.pk` と、25物体ごとの `sim_st_<開始>_ed_<終了>_on_test_obj2hand_full1126_*.pk`）。
+集計：
+```
+python isaac/summarize_sim_split.py \
+    --out_dir results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126 \
+    --test_file results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk \
+    --save results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/sim_summary_full1126.json
+```
+
+### 結果（全1126物体、2026-10-29）
+所要時間は52分（(1) が11.5分、(2) が25物体×46プロセスで41分）。エラーなし。
+
+| 条件 | 把持数 | 成功率 (valid) | penetration 通過 | simulated 通過 | 平均 q1 | 平均最大めり込み (cm) |
+|---|---|---|---|---|---|---|
+| 生成のみ（`hand_param_out`） | 56,300 | 45.5% | 54.2% | 81.0% | 0.0037 | 0.457 |
+| ＋最適化（`hand_param_opt`） | 56,300 | 68.6% | 87.9% | 75.6% | 0.0035 | 0.183 |
+| ＋discriminator 上位7/10 | 39,410 | 71.4% | 88.9% | 78.0% | 0.0035 | 0.175 |
+| ＋discriminator 上位8/10 | 45,040 | 70.8% | 88.6% | 77.5% | 0.0035 | 0.177 |
+
+- 論文：生成のみ 43.6%（Table 5）、＋最適化 64.1%（Table 1 の w/o disc、q1 0.036、めり込み 0.17 cm）、
+  UGG 72.7%（q1 0.063、めり込み 0.14 cm）。
+- 平均 q1 は全把持の平均。E_pen の単位はメートル（`thres_pen = 0.005` が論文の 0.5 cm）なので100倍して cm にした。
+- discriminator の上位は、物体・スケールごとに `disc_pred`（最適化前の把持に対するスコア）が高い順に選んだ。
+  論文は物体・スケールごとに40個生成して上位30個（75%）を残すので、10個中7個・8個の両方を出した。
+- 集計結果の JSON：`results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/sim_summary_full1126.json`
+
+### q1 について（元のコードの挙動）
+- q1 は DexGraspNet 式で、wrench の点集合に原点を加えた凸包の、原点から各面までの最小距離。
+  原点がほかの wrench の凸包の外にある（force closure でない）と原点が凸包の頂点になり、q1 = 0 になる。
+- `cal_q1`（`nms: False`）は接触候補が `max_contact = 20` を超えると `random.shuffle` でテンソルを並べ替えるが、
+  torch のテンソルに `random.shuffle` を使うと要素の入れ替えがビューのコピーになって値が重複する。
+  試した把持では20点のうち異なる点は9〜10点だった（`torch.arange(30)` を `random.shuffle` すると、
+  PyTorch 2.7.1 でも 2.4.1 でも異なる値は14個になる）。テンソルのインデックスがビューを返すことによるので、
+  元の環境（PyTorch 1.12）でも同じはずだが、1.12 では確認していない。
+- 平均 q1 が論文より1桁低いのは、ほぼこの重複のため。30物体（1500把持、最適化後）で、`random.shuffle` だけを
+  重複しない並べ替え（`torch.randperm`）に替えて計算すると、平均 q1 は 0.0041 から 0.0882 に、q1 > 0 の割合は 18% から 64% になった
+  （診断のためだけの計算で、本番の結果は元のコードのまま）。
