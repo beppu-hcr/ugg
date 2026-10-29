@@ -207,3 +207,17 @@ python scripts/vis_sim_grasps.py \
   そのため把持1つを1つの図にし、PNG は PIL で 2×4 に並べ、HTML は独立した8つの図を1ページに並べている。
 - HTML はヘッドレス Chrome（`--use-angle=swiftshader --enable-unsafe-swiftshader`）のスクリーンショットで、
   8つの図すべてが表示されることを確認した。
+
+## 6. 失敗の内訳と discriminator の分析
+`scripts/analyze_sim_results.py`（`ugg` 環境）。保存済みのシミュレーション結果だけから集計し、再実行はしない。
+出力は `results/analysis/`（CSV・`tables.md`・`analysis.json`、報告は `report.md`）。
+```
+python scripts/analyze_sim_results.py \
+    --out_dir results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126 \
+    --test_file results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk
+```
+- 失敗のうちめり込みだけによるものは、生成のみで 65%、最適化後で 22%。シミュレーションだけによるものは 16% と 61%。
+- 最適化で成功→失敗になった把持は 4.1% で、その 84% はシミュレーションだけで失敗している。
+- `disc_pred` は `hand_param_out` に対して計算されている（`model/ugg/eval_generation.py`）。
+  valid に対する AUC は全把持で 0.67（生成のみ）／0.69（最適化後）、物体・スケール内の平均で約 0.59。
+  0.5 以上ではスコアが上がっても成功率は上がらない。
