@@ -191,3 +191,19 @@ python isaac/summarize_sim_split.py \
 - 平均 q1 が論文より1桁低いのは、ほぼこの重複のため。30物体（1500把持、最適化後）で、`random.shuffle` だけを
   重複しない並べ替え（`torch.randperm`）に替えて計算すると、平均 q1 は 0.0041 から 0.0882 に、q1 > 0 の割合は 18% から 64% になった
   （診断のためだけの計算で、本番の結果は元のコードのまま）。
+
+## 5. 把持の可視化
+`scripts/vis_sim_grasps.py`（`ugg` 環境）。マグカップ・ピストル・携帯電話から1物体ずつ選び、「生成のみ」と「＋最適化」の把持を
+物体と重ねて表示する。物体・スケールごとの discriminator 上位7個の中から、成功2個（緑）と失敗2個（赤）を
+`disc_pred` の高い順に選ぶ（2つの条件で別々に選ぶ）。出力は `results/vis/` に HTML（ブラウザで回せる）と PNG。
+```
+python scripts/vis_sim_grasps.py \
+    --out_dir results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126 \
+    --test_file results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk
+```
+- PNG の書き出しに kaleido を使う。`ugg` 環境だけに入れ、kaleido 用の Chrome を取得した：
+  `pip install "kaleido>=1.0" && plotly_get_chrome -y`（Chrome は `~/.local/share/choreographer/` に入る）。
+- 1つの plotly の図に複数の 3D シーン（`make_subplots`）を置くと、kaleido で書き出した PNG で物体のメッシュが欠けたり白く抜けたりした。
+  そのため把持1つを1つの図にし、PNG は PIL で 2×4 に並べ、HTML は独立した8つの図を1ページに並べている。
+- HTML はヘッドレス Chrome（`--use-angle=swiftshader --enable-unsafe-swiftshader`）のスクリーンショットで、
+  8つの図すべてが表示されることを確認した。
