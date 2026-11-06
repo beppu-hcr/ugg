@@ -1,0 +1,3 @@
+condition,auc_pooled,auc_within_pair_mean,n_pairs_with_both_classes,n_pairs
+out,0.6666,0.5924,4992,5630
+opt,0.6914,0.5891,4575,5630

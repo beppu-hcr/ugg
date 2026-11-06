@@ -1,0 +1,7 @@
+subset,failed_by,n,of_success_to_failure
+all,pen_only,274,0.1201
+all,sim_only,1926,0.8444
+all,both,81,0.0355
+top7,pen_only,192,0.1252
+top7,sim_only,1287,0.8390
+top7,both,55,0.0359

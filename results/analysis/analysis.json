@@ -1,0 +1,235 @@
+{
+  "test_file": "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk",
+  "files": [
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_0_ed_24_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-09-56-08.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1000_ed_1024_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-32-20.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_100_ed_124_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-09-59-30.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1025_ed_1049_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-33-10.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1050_ed_1074_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-34-06.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1075_ed_1099_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-35-03.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1100_ed_1124_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-36-19.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_1125_ed_1125_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-37-11.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_125_ed_149_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-00-28.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_150_ed_174_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-01-16.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_175_ed_199_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-01-57.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_200_ed_224_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-02-41.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_225_ed_249_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-03-23.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_250_ed_274_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-04-04.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_25_ed_49_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-09-56-53.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_275_ed_299_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-04-47.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_300_ed_324_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-06-07.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_325_ed_349_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-07-27.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_350_ed_374_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-08-36.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_375_ed_399_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-09-43.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_400_ed_424_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-10-31.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_425_ed_449_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-11-25.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_450_ed_474_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-12-08.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_475_ed_499_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-12-51.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_500_ed_524_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-13-39.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_50_ed_74_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-09-57-39.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_525_ed_549_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-14-29.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_550_ed_574_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-15-28.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_575_ed_599_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-16-33.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_600_ed_624_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-17-35.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_625_ed_649_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-18-27.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_650_ed_674_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-19-21.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_675_ed_699_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-20-25.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_700_ed_724_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-21-25.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_725_ed_749_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-22-22.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_750_ed_774_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-23-10.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_75_ed_99_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-09-58-24.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_775_ed_799_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-24-01.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_800_ed_824_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-24-56.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_825_ed_849_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-25-39.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_850_ed_874_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-26-26.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_875_ed_899_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-27-27.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_900_ed_924_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-28-29.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_925_ed_949_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-29-28.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_950_ed_974_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-30-23.pk",
+    "results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/sim_st_975_ed_999_on_test_obj2hand_full1126_2026-10-28-21-41-10_t_2026-10-29-10-31-28.pk"
+  ],
+  "k": 7,
+  "tables": {
+    "failure_breakdown": [
+      {
+        "condition": "out",
+        "n_grasps": 56300,
+        "n_fail": 30676,
+        "fail_rate": 0.5448667850799289,
+        "pen_only_n": 19980,
+        "pen_only_of_fail": 0.6513235102360151,
+        "pen_only_of_all": 0.35488454706927175,
+        "sim_only_n": 4897,
+        "sim_only_of_fail": 0.15963619767896728,
+        "sim_only_of_all": 0.0869804618117229,
+        "both_n": 5799,
+        "both_of_fail": 0.1890402920850176,
+        "both_of_all": 0.10300177619893428
+      },
+      {
+        "condition": "opt",
+        "n_grasps": 56300,
+        "n_fail": 17685,
+        "fail_rate": 0.3141207815275311,
+        "pen_only_n": 3954,
+        "pen_only_of_fail": 0.22357930449533503,
+        "pen_only_of_all": 0.07023090586145649,
+        "sim_only_n": 10854,
+        "sim_only_of_fail": 0.6137404580152672,
+        "sim_only_of_all": 0.1927886323268206,
+        "both_n": 2877,
+        "both_of_fail": 0.1626802374893978,
+        "both_of_all": 0.051101243339254
+      },
+      {
+        "condition": "opt_top7",
+        "n_grasps": 39410,
+        "n_fail": 11279,
+        "fail_rate": 0.28619639685359044,
+        "pen_only_n": 2593,
+        "pen_only_of_fail": 0.22989626739959215,
+        "pen_only_of_all": 0.06579548337985283,
+        "sim_only_n": 6890,
+        "sim_only_of_fail": 0.6108697579572657,
+        "sim_only_of_all": 0.17482872367419436,
+        "both_n": 1796,
+        "both_of_fail": 0.15923397464314212,
+        "both_of_all": 0.045572189799543264
+      }
+    ],
+    "transitions": [
+      {
+        "subset": "all",
+        "transition": "success -> success",
+        "n": 23343,
+        "rate": 0.41461811722912967
+      },
+      {
+        "subset": "all",
+        "transition": "success -> failure",
+        "n": 2281,
+        "rate": 0.04051509769094139
+      },
+      {
+        "subset": "all",
+        "transition": "failure -> success",
+        "n": 15272,
+        "rate": 0.27126110124333924
+      },
+      {
+        "subset": "all",
+        "transition": "failure -> failure",
+        "n": 15404,
+        "rate": 0.2736056838365897
+      },
+      {
+        "subset": "top7",
+        "transition": "success -> success",
+        "n": 17766,
+        "rate": 0.4507992895204263
+      },
+      {
+        "subset": "top7",
+        "transition": "success -> failure",
+        "n": 1534,
+        "rate": 0.03892413093123573
+      },
+      {
+        "subset": "top7",
+        "transition": "failure -> success",
+        "n": 10365,
+        "rate": 0.26300431362598325
+      },
+      {
+        "subset": "top7",
+        "transition": "failure -> failure",
+        "n": 9745,
+        "rate": 0.24727226592235474
+      }
+    ],
+    "success_to_failure_breakdown": [
+      {
+        "subset": "all",
+        "failed_by": "pen_only",
+        "n": 274,
+        "of_success_to_failure": 0.12012275317843052
+      },
+      {
+        "subset": "all",
+        "failed_by": "sim_only",
+        "n": 1926,
+        "of_success_to_failure": 0.8443665059184569
+      },
+      {
+        "subset": "all",
+        "failed_by": "both",
+        "n": 81,
+        "of_success_to_failure": 0.03551074090311267
+      },
+      {
+        "subset": "top7",
+        "failed_by": "pen_only",
+        "n": 192,
+        "of_success_to_failure": 0.12516297262059975
+      },
+      {
+        "subset": "top7",
+        "failed_by": "sim_only",
+        "n": 1287,
+        "of_success_to_failure": 0.8389830508474576
+      },
+      {
+        "subset": "top7",
+        "failed_by": "both",
+        "n": 55,
+        "of_success_to_failure": 0.03585397653194263
+      }
+    ],
+    "disc_auc": [
+      {
+        "condition": "out",
+        "auc_pooled": 0.6665960283558652,
+        "auc_within_pair_mean": 0.5923839333409645,
+        "n_pairs_with_both_classes": 4992,
+        "n_pairs": 5630
+      },
+      {
+        "condition": "opt",
+        "auc_pooled": 0.691357798696461,
+        "auc_within_pair_mean": 0.5890925405499177,
+        "n_pairs_with_both_classes": 4575,
+        "n_pairs": 5630
+      }
+    ],
+    "disc_bins": [
+      {
+        "disc_pred": "< 0.5",
+        "n_grasps": 27692,
+        "share": 0.49186500888099466,
+        "success_rate_out": 0.3244980499783331,
+        "success_rate_opt": 0.5644590495449949
+      },
+      {
+        "disc_pred": "0.5-0.9",
+        "n_grasps": 22425,
+        "share": 0.39831261101243337,
+        "success_rate_out": 0.5872017837235228,
+        "success_rate_opt": 0.8093199554069119
+      },
+      {
+        "disc_pred": "0.9-0.99",
+        "n_grasps": 5176,
+        "share": 0.09193605683836589,
+        "success_rate_out": 0.5795981452859351,
+        "success_rate_opt": 0.7975270479134466
+      },
+      {
+        "disc_pred": ">= 0.99",
+        "n_grasps": 1007,
+        "share": 0.01788632326820604,
+        "success_rate_out": 0.4667328699106256,
+        "success_rate_opt": 0.702085402184707
+      }
+    ]
+  }
+}
