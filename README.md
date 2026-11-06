@@ -69,8 +69,9 @@ environments: `isaac/sim_split_metrics.py` (stage 1, the non-Isaac part of `simu
 and `isaac/sim_split_isaac.py` (stage 2, the unchanged `IsaacValidator`). The criteria are those of the
 original code. Stage 2 needs only NumPy besides Isaac Gym, so the Isaac env has no PyTorch.
 
-Requirements: an NVIDIA driver for CUDA 12.8 (≥ 570), conda, and a system C/C++ compiler (tested with gcc 13.3),
-`git`, `wget` and `unzip`. Run all commands from the repository root:
+Requirements: an NVIDIA driver for CUDA 12.8 (≥ 570), conda, `git`, `wget` and `unzip`. The C/C++ compiler
+for the CUDA extensions (conda-forge gcc 13) is installed into the env with the CUDA packages. Run all
+commands from the repository root:
 ```
 git clone https://github.com/beppu-hcr/ugg.git
 cd ugg
@@ -109,7 +110,7 @@ pip install "numpy==1.26.4" "setuptools==69.5.1" wheel "ninja==1.13.2" \
     "pytorch-lightning==2.0.4" "torchmetrics==0.11.4" "lightning-utilities==0.15.3" "torch_geometric==2.6.1" \
     "easydict==1.13" "einops==0.8.2" "loguru==0.7.3" "scipy==1.15.3" "trimesh==4.6.4" "transforms3d==0.4.2" \
     "pyyaml==6.0.3" "tqdm==4.70.1" "plotly==7.1.0" "open3d==0.20.0" "pillow==12.3.0" "iopath==0.1.10" \
-    "transformations==2025.1.1" "absl-py==2.5.0" "lxml==6.1.3"
+    "transformations==2025.1.1" "absl-py==2.5.0" "lxml==6.1.3" "six==1.17.0"
 pip install "pyg_lib==0.5.0+pt27cu128" "torch_cluster==1.6.3+pt27cu128" -f https://data.pyg.org/whl/torch-2.7.0+cu128.html
 ```
 Pinned versions that matter:
@@ -122,7 +123,9 @@ Pinned versions that matter:
 - xformers is not needed: with PyTorch 2.x the attention layers use `scaled_dot_product_attention`
   (see [Differences](#differences-from-the-original-readme-and-code-known-issues)).
 
-Build PyTorch3D from source (about 10 minutes with 16 jobs):
+`transformations`, `absl-py`, `lxml` and `six` are used by the bundled `pytorch_kinematics` (below).
+
+Build PyTorch3D from source (about 1 minute with 16 jobs, since only sm_120 is compiled):
 ```
 FORCE_CUDA=1 MAX_JOBS=16 pip install --no-build-isolation "git+https://github.com/facebookresearch/pytorch3d.git@v0.7.9"
 ```
@@ -141,7 +144,7 @@ cd thirdparty/TorchSDF && git checkout 0.1.0 && git apply ../../environment/rtx5
 FORCE_CUDA=1 IGNORE_TORCH_VER=1 MAX_JOBS=16 pip install --no-build-isolation -e .
 cd ../..
 ```
-Compile LION's pvcnn (about 2 minutes; it goes to `$TORCH_EXTENSIONS_DIR`):
+Compile LION's pvcnn (about 15 seconds; it goes to `$TORCH_EXTENSIONS_DIR`):
 ```
 (cd LION && python build_pkg.py)
 ```
