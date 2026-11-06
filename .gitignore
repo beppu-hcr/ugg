@@ -214,7 +214,11 @@ dmypy.json
 cython_debug/
 
 data/
-results/
+# results: only the summaries are tracked (results/results.md, results/analysis/)
+results/*
+!results/results.md
+!results/analysis/
+results/analysis/contacts_per_grasp.csv
 temp*
 *.png
 checkpoints/
@@ -225,3 +229,9 @@ data
 
 # RTX 5090 setup: TorchSDF is cloned here (see SETUP_NOTES.md)
 thirdparty/TorchSDF/
+
+# RTX 5090 setup: Isaac Gym Preview 4 and the downloaded archives (see README)
+IsaacGym_Preview_4_Package/
+IsaacGym_Preview_4_Package.tar.gz
+ugg-*.zip
+ugg_release/
