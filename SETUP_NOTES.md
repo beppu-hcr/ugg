@@ -221,3 +221,10 @@ python scripts/analyze_sim_results.py \
 - `disc_pred` は `hand_param_out` に対して計算されている（`model/ugg/eval_generation.py`）。
   valid に対する AUC は全把持で 0.67（生成のみ）／0.69（最適化後）、物体・スケール内の平均で約 0.59。
   0.5 以上ではスコアが上がっても成功率は上がらない。
+
+### 接触の分析
+`scripts/analyze_contacts.py`（`ugg` 環境、約2分）。最適化後の把持について、手の接触点（5 mm・10 mm 以内）、触れている指、
+手のひら（`contact_points.json` に点がないので `robot0:palm` の表面サンプル点）、接触アンカーと手・物体の距離を、
+保存済みの `hand_param_opt`・`contact_map` とメッシュから計算する。報告は `results/analysis/contact_analysis.md`。
+- シミュレーションだけで失敗した把持は、小さいスケール（0.06・0.08）では接触点と触れている指が成功より明らかに少ない。
+  大きいスケール（0.12・0.15、この種類の失敗の62%）では接触の量は成功とほぼ同じで、親指・手のひらの接触とアンカーの位置に差が残る。
