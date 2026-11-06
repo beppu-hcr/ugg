@@ -283,3 +283,12 @@ clone するブランチ（main へのマージ前なので `-b rtx5090-setup`�
   - ~/ugg の全物体の実行と同じ把持（最初の2物体を取り出した .pk）を新しい環境で評価すると、200把持すべてで
     E_pen、6方向のうち接触が残った数、penetration、valid が完全に一致した。違うのは q1 だけで、
     `cal_q1` が使う Python の `random` に種が設定されていないため（~/ugg の中で同じ入力を2回評価しても変わる）。
+
+### 手元の `ugg-isaac` 環境（2026-11-06）
+~/ugg でも README と同じコマンドで動くように、README の手順2のとおりに `ugg-isaac` 環境を作った。Isaac Gym のアーカイブ
+（`~/Downloads` の手元のものを `IsaacGym_Preview_4_Package.tar.gz` としてコピー）は `~/ugg/IsaacGym_Preview_4_Package/` に展開した。
+アーカイブもフォルダも git の管理外。
+既存の2物体の結果（`test_obj2hand_range0_2_2026-10-28-21-22-22.pk`）で、`bash isaac/run_sim_split.sh <TEST_FILE>` を既定の環境名
+（`ugg` と `ugg-isaac`）のまま実行し、エラーなしで通った（出力は `test_obj2hand/sim_on_test_obj2hand_range0_2/`）。
+成功率は生成のみ 54%、＋最適化 75%、上位7個 82.9%。
+検証用に作った `~/ugg-verify`、`~/ugg-verify2` と、その conda 環境4つは削除した。
