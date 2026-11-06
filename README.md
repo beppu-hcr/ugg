@@ -43,12 +43,18 @@ sh run_isaac.sh
 ```
 
 ## Setup on RTX 50-series (Blackwell) GPUs
-> **Note:** These steps were verified by following them from start to finish in a fresh clone with newly
-> created conda environments, through the 2-object check of step 4 (inference and simulation test).
-> DexGraspNet was downloaded with the commands below. The checkpoint zip and the Isaac Gym archive were
-> taken from an existing local copy rather than downloaded. The full 1126-object run, the analysis
-> scripts on the full results and the visualization (with the optional kaleido) were run in the
-> environment the steps were derived from, not in the fresh one.
+> **Note:** These steps were verified by copying the commands of steps 1–4 into a shell and running them from
+> start to finish, in a fresh clone with newly created conda environments, through the 2-object check of
+> step 4 (inference, simulation test and summary). Only the env names were changed, and the clone used the
+> branch `rtx5090-setup` before it was merged into `main`. The analysis scripts were also run on those 2 objects.
+> DexGraspNet was downloaded with the commands below. The checkpoint zip and the Isaac Gym archive were copied
+> from an existing local download instead of being downloaded again.
+>
+> **Not tested in the fresh environments:** the full 1126-object run, the analyses of the full results, and the
+> optional kaleido install and visualization. These ran in the environments the steps were derived from (a model
+> env with the same PyTorch, cloned from another project, and an existing Python 3.8 env with Isaac Gym), and
+> produced [`results/results.md`](results/results.md). Given the same generated grasps, the fresh environments
+> reproduced its penetration, simulation and success results for every grasp of the first 2 objects.
 
 The environment above (PyTorch 1.12 + CUDA 11.3) does not run on sm_120 GPUs such as the RTX 5090.
 The steps below were used on an RTX 5090 (driver 595, Ubuntu 24.04) for **obj2hand inference with the
@@ -222,7 +228,7 @@ R=results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand
 `eval_generation.py`. It activates the envs named by `UGG_ENV` and `ISAAC_ENV` (default `ugg` and
 `ugg-isaac`). The output goes to `$R/sim_on_<name of the .pk without the time stamp>/`.
 
-**Check with 2 objects** (inference about 40 seconds, simulation test about 1 minute).
+**Check with 2 objects** (about 45 seconds in total).
 `experiments/ugg_obj2hand_test_range0_2.yaml` is `ugg_obj2hand_test.yaml` with `DATA.RANGE: [0, 2]`:
 ```
 conda activate ugg
@@ -285,8 +291,11 @@ The analysis scripts expect 1126 objects by default (`--n_objects`).
   each time; stage 1 runs all objects in one process. The object point clouds used for penetration (sampled
   from the mesh) and the contact selection of q1 therefore use different random numbers than the original.
   The criteria are the same.
-- **Not bit-for-bit reproducible.** Re-running inference with the same seed gives slightly different grasps
-  on the GPU (e.g. up to 0.016 in `hand_param_out` and 0.16 in `hand_param_opt` for the first 2 objects).
+- **Inference is not bit-for-bit reproducible.** Re-running it with the same seed gives slightly different
+  grasps on the GPU (e.g. up to 0.016 in `hand_param_out` and 0.16 in `hand_param_opt` for the first 2 objects),
+  so success rates of small runs vary by a few points. The simulation test is deterministic for the same
+  grasps, except q1.
+- **q1 changes between runs**: `cal_q1` uses Python's `random`, which neither `simulation_test.py` nor stage 1 seeds.
 - **Harmless warnings**: `torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly`,
   `None of the inputs have requires_grad=True` (gradient checkpointing at inference), and the PyTorch 2.x
   `FutureWarning`s about `torch.cuda.amp`.

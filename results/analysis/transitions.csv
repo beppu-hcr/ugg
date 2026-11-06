@@ -1,0 +1,9 @@
+subset,transition,n,rate
+all,success -> success,23343,0.4146
+all,success -> failure,2281,0.0405
+all,failure -> success,15272,0.2713
+all,failure -> failure,15404,0.2736
+top7,success -> success,17766,0.4508
+top7,success -> failure,1534,0.0389
+top7,failure -> success,10365,0.2630
+top7,failure -> failure,9745,0.2473

@@ -1,14 +1,27 @@
 # RTX 5090（sm_120）での UGG セットアップメモ
 
-README の環境（Python 3.8 / PyTorch 1.12.1 / CUDA 11.3）は sm_120 で動かないため、
-`~/grasp2grasp` の `g2g` 環境（Python 3.10 / PyTorch 2.7.1+cu128）を複製して使う。
-ここまでで確認できたのは **obj2hand の推論（2物体）まで**。学習と Isaac Gym のシミュレーション評価は未実施。
+README の環境（Python 3.8 / PyTorch 1.12.1 / CUDA 11.3）は sm_120 で動かない。
+**手順の正本は README.md の「Setup on RTX 50-series (Blackwell) GPUs」**（英語）で、まっさらな clone と新しい conda 環境で
+上から実行して確認してある（7章）。このメモは、その手順を見つけた経緯と、手元の環境（`ugg`）での作業記録。
+結果のまとめは `results/results.md`。
 
-確認した環境：RTX 5090、ドライバ 595.91.07、Ubuntu 24.04（2026-10-28）。
+確認できたのは obj2hand の推論（全1126物体）と Isaac Gym のシミュレーション評価まで。学習、hand2obj、joint は未実施。
+
+確認した環境：RTX 5090、ドライバ 595.91.07、Ubuntu 24.04（2026-10-28〜11-06）。
 
 ## 1. conda 環境 `ugg`
 
-`g2g` を複製し、UGG 固有のものを追加する（`g2g` と `grasp2grasp` には手を加えない）。
+手元の `ugg` は、`~/grasp2grasp` の `g2g` 環境を複製して UGG 固有のものを追加して作った（`g2g` と `grasp2grasp` には手を加えていない）。
+README には、`g2g` がなくても作れるように `conda create` から書いた手順を載せた。README の手順との違い：
+- README は UGG が使うパッケージだけを入れる（バージョンは手元の `ugg` の `pip freeze` に合わせた）。
+  手元の `ugg` には `g2g` 由来の xformers、kornia、POT などもあるが、UGG の実行には使われない。
+- `six` は同梱の pytorch_kinematics（`mjcf_parser`）が使う。手元の `ugg` には `g2g` から入っていたため気づかず、
+  README の検証（1回目）で `ModuleNotFoundError: No module named 'six'` になって追加した。
+- C/C++ コンパイラは、conda の CUDA パッケージと一緒に環境内に入る conda-forge の gcc 13 が使われる（システムの gcc は不要）。
+- `TORCH_EXTENSIONS_DIR`：リポジトリの `activate_ugg.sh` は `$CONDA_PREFIX/share/torch_extensions`（環境ごと）に変えた。
+  手元の `ugg` に入れた古い版は `~/.cache/torch_extensions_ugg` のまま（そのままで問題ない）。
+
+以下は手元の `ugg` を作ったときの記録：
 ```
 conda create -y -n ugg --clone g2g
 conda activate ugg
@@ -81,6 +94,8 @@ cd LION && python build_pkg.py && cd ..
   ```
   `split_dexgraspobject_test.txt` の1126物体はすべて `meshdata` にある（最終行に改行がないので `wc -l` だと1125と出る）。
 - 初回実行時に `data/splits/saved_dexgraspobject_test.pk` が自動生成される。
+- README の手順では、Google Drive の zip を展開して `checkpoints/` と `data/` に移し、DexGraspNet は `wget` で
+  `data/` に直接展開する（別の場所に展開してシンボリックリンクにしてもよい、と書いてある）。
 
 ## 3. obj2hand 推論
 
@@ -132,7 +147,7 @@ GPU で動かすため、RTX 5090 ではそのまま動かない（Python 3.8 �
 | スクリプト | 環境 | 内容 |
 |---|---|---|
 | `isaac/sim_split_metrics.py` | `ugg`（GPU） | `obj2hand_sim` のうち Isaac 以外（E_pen、q1、`sim_test` に渡す姿勢の変換）を元のコードのまま実行して保存 |
-| `isaac/sim_split_isaac.py` | `grasp2grasp`（Isaac Gym、PhysX は GPU） | 元と同じ `IsaacValidator` で6方向のシミュレーションを行い、元と同じキーの result_dict を保存 |
+| `isaac/sim_split_isaac.py` | Isaac Gym の Python 3.8 環境（全物体の実行は `grasp2grasp`、README では `ugg-isaac`。PhysX は GPU） | 元と同じ `IsaacValidator` で6方向のシミュレーションを行い、元と同じキーの result_dict を保存 |
 | `isaac/run_sim_split.sh` | — | 上の2つを順に実行。Isaac 側は元の `run_sim.sh` と同じく25物体ずつ別プロセス |
 | `isaac/summarize_sim_split.py` | `ugg` | 結果を集計（論文の表との比較用） |
 
@@ -148,10 +163,24 @@ GPU で動かすため、RTX 5090 ではそのまま動かない（Python 3.8 �
     判定の定義は同じ。
 - 出力のキーと順番が元の result_dict と同じことを、`simulation_test.py` のソースから抜き出したキーと比べて確認した。
 
-実行（tmux セッション `ugg-sim`、ログ `logs/sim_full1126.log`）：
+Isaac 側の環境：
+- 全物体の実行（2026-10-29）では、`~/grasp2grasp` の `grasp2grasp` 環境（Python 3.8、Isaac Gym Preview 4）をそのまま使った。
+- README では、NumPy だけを入れた `ugg-isaac` 環境を新しく作る。stage 2 は Isaac Gym と NumPy しか使わないため、PyTorch は不要
+  （`isaacgym` は `pip install -e` ではなく `.pth` で読み込ませる。`pip install -e` だと PyTorch が入る）。
+
+`isaac/run_sim_split.sh` の使い方（README の検証に合わせて、TEST_FILE と環境名を引数・環境変数で渡す形に変えた）：
 ```
-tmux new-session -d -s ugg-sim -c ~/ugg
-tmux send-keys -t ugg-sim 'set -o pipefail; bash isaac/run_sim_split.sh 2>&1 | tee logs/sim_full1126.log' Enter
+bash isaac/run_sim_split.sh <TEST_FILE>          # 環境名は UGG_ENV（既定 ugg）と ISAAC_ENV（既定 ugg-isaac）
+```
+- 出力先は `test_obj2hand/sim_on_<TEST_FILE の名前から時刻を除いたもの>/`。TEST_FILE は `sim_on_*/test_file.yaml` に書いて
+  `--cfg experiments/ugg_simulation_test.yaml --cfg <test_file.yaml>` で stage 1 に明示的に渡す。
+- 物体数は TEST_FILE から数える（元は `total=1126` を直書きしていた）。
+
+全物体の実行（2026-10-29）は、変更前の版（`experiments/ugg_simulation_test_full.yaml` を使い、Isaac 側は `grasp2grasp`）で、
+tmux セッション `ugg-sim`、ログ `logs/sim_full1126.log` で行った。今の版で同じことをするなら：
+```
+ISAAC_ENV=grasp2grasp bash isaac/run_sim_split.sh \
+    results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk
 ```
 出力：`results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/sim_on_test_obj2hand_full1126/`
 （`metrics_st_0_ed_1125_*.pk` と、25物体ごとの `sim_st_<開始>_ed_<終了>_on_test_obj2hand_full1126_*.pk`）。
@@ -202,7 +231,7 @@ python scripts/vis_sim_grasps.py \
     --test_file results/ugg_generation/ugg_bs8x256_lr0002_l2_cosine/test_obj2hand/test_obj2hand_full1126_2026-10-28-21-41-10.pk
 ```
 - PNG の書き出しに kaleido を使う。`ugg` 環境だけに入れ、kaleido 用の Chrome を取得した：
-  `pip install "kaleido>=1.0" && plotly_get_chrome -y`（Chrome は `~/.local/share/choreographer/` に入る）。
+  `pip install "kaleido>=1.0" && plotly_get_chrome -y`。入ったのは 1.5.0 で、README では 1.5.0 に固定した。Chrome は `~/.local/share/choreographer/` に入る。
 - 1つの plotly の図に複数の 3D シーン（`make_subplots`）を置くと、kaleido で書き出した PNG で物体のメッシュが欠けたり白く抜けたりした。
   そのため把持1つを1つの図にし、PNG は PIL で 2×4 に並べ、HTML は独立した8つの図を1ページに並べている。
 - HTML はヘッドレス Chrome（`--use-angle=swiftshader --enable-unsafe-swiftshader`）のスクリーンショットで、
@@ -228,3 +257,29 @@ python scripts/analyze_sim_results.py \
 保存済みの `hand_param_opt`・`contact_map` とメッシュから計算する。報告は `results/analysis/contact_analysis.md`。
 - シミュレーションだけで失敗した把持は、小さいスケール（0.06・0.08）では接触点と触れている指が成功より明らかに少ない。
   大きいスケール（0.12・0.15、この種類の失敗の62%）では接触の量は成功とほぼ同じで、親指・手のひらの接触とアンカーの位置に差が残る。
+
+## 7. README の手順の検証（2026-11-06）
+README の「Setup on RTX 50-series (Blackwell) GPUs」の手順 1〜4 のコードブロックを、そのまま上から順に実行するスクリプトにして、
+GitHub から新しく clone したフォルダと新しい conda 環境で実行した。README と変えたのは、環境名、clone 先のフォルダ名、
+clone するブランチ（main へのマージ前なので `-b rtx5090-setup`）だけ。実行しなかったのは、任意の kaleido と、全1126物体の実行・分析のブロック。
+- チェックポイントの zip と Isaac Gym のアーカイブは、ダウンロードし直さずに `~/Downloads` の手元のものをコピーした。
+  DexGraspNet は README の `wget` で実際にダウンロードした（2ファイルで約3.5分）。
+- 1回目（`~/ugg-verify`、環境 `ugg-verify` / `ugg-isaac-verify`）：推論の起動時に
+  `ModuleNotFoundError: No module named 'six'` で止まった（同梱の pytorch_kinematics の `mjcf_parser` が使う）。
+  README に `six==1.17.0` を足した。同じ環境に `six` だけ足して2物体の推論・シミュレーション評価・分析スクリプトまで試し、
+  ほかに足りないものがないことを確かめた。リポジトリ全体の import も調べ、環境に無いのは isaacgym（Isaac 側の環境で使う）、
+  rospy と xformers（無くても動く import）だけだった。
+- 2回目（`~/ugg-verify2`、環境 `ugg-verify2` / `ugg-isaac-verify2`）：README のコマンドだけで最後までエラーなしで通った。
+  1回目の環境とフォルダの削除は、権限の確認で止められたので、別の名前で作り直した。
+  かかった時間は約7.5分：
+  - 環境作り：約3分（PyTorch3D のビルド約1分、TorchSDF 約13秒、LION の pvcnn 約14秒。pip のキャッシュあり）
+  - DexGraspNet のダウンロードと展開：約3.5分
+  - 2物体の推論・シミュレーション評価・集計：約45秒
+- 2物体の結果を ~/ugg の結果と比べた：
+  - 成功数（生成のみ／＋最適化／上位7個）は、新しい環境で 54/100、74/100、57/70。~/ugg の全物体の実行の同じ2物体では
+    54/100、75/100、56/70。
+  - 生成された把持は少しずれる：`hand_param_out` で最大 0.021、`hand_param_opt` で最大 0.06（~/ugg の2物体の実行との差）。
+    推論は GPU 上で完全には再現しない。~/ugg の中でも、2物体の実行と全物体の実行では 0.016 と 0.16 ずれている。
+  - ~/ugg の全物体の実行と同じ把持（最初の2物体を取り出した .pk）を新しい環境で評価すると、200把持すべてで
+    E_pen、6方向のうち接触が残った数、penetration、valid が完全に一致した。違うのは q1 だけで、
+    `cal_q1` が使う Python の `random` に種が設定されていないため（~/ugg の中で同じ入力を2回評価しても変わる）。
